@@ -1,19 +1,19 @@
-name: Build, Lint & Deploy CuttingQueues Docs
+name: Build, Test & Deploy CuttingQueues Docs
 
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build-lint-deploy:
+  build-test-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: 🧾 Checkout repository
@@ -28,27 +28,30 @@ jobs:
         run: |
           pip install mkdocs-material
           pip install mkdocs-htmlproofer-plugin
-          pip install mkdocs-lint
           pip install codespell
           pip install yamllint
+          pip install markdownlint-cli2
 
       - name: 🔍 Validate YAML syntax
         run: |
           yamllint mkdocs.yml || true
           yamllint .github/workflows/*.yml || true
 
-      - name: 🧠 Lint docs with mkdocs-lint
-        run: mkdocs-lint
+      - name: 🧠 Lint Markdown formatting
+        run: |
+          npx --yes markdownlint-cli2 docs/**/*.md
 
       - name: 🪶 Spell check docs
         run: |
-          codespell docs/ --skip="*.png,*.svg,*.jpg" -L "teh,crate,queueing"
+          codespell docs/ --skip="*.png,*.svg,*.jpg" -L "teh,crate,queueing,cuttingqueues"
 
       - name: 🔗 Validate links
-        run: mkdocs build --strict --clean
-        env:
-          MKDOCS_PROOFER_IGNORE: "mailto:"
+        run: |
+          echo "plugins:" > mkdocs-ci.yml
+          echo "  - htmlproofer:" >> mkdocs-ci.yml
+          echo "      raise_error: true" >> mkdocs-ci.yml
+          echo "site_name: CuttingQueues (CI)" >> mkdocs-ci.yml
+          mkdocs build --config-file mkdocs-ci.yml --strict --clean
 
       - name: 🚀 Deploy if build passes
-        if: github.ref == 'refs/heads/main' && success()
-        run: mkdocs gh-deploy --force
+        if: github.ref == 'refs/heads/mai
