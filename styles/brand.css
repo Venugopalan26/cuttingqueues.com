@@ -1,0 +1,22 @@
+.md-header__title {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.md-logo img {
+  border-radius: 16px;
+  box-shadow: 0 0 8px rgba(229, 57, 53, 0.3);
+}
+
+.md-main__inner {
+  background: radial-gradient(circle at top left, #121212, #0d0d0d);
+}
+
+h1, h2, h3 {
+  color: #00BCD4;
+}
+
+a {
+  color: #673AB7;
+}
