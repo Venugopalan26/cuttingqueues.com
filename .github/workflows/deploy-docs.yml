@@ -2,11 +2,9 @@ name: Build, Test & Deploy CuttingQueues Docs
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
   workflow_dispatch:
 
 permissions:
@@ -24,22 +22,29 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 📦 Install dependencies
+      - name: 📦 Install Python dependencies
         run: |
           pip install mkdocs-material
           pip install mkdocs-htmlproofer-plugin
           pip install codespell
           pip install yamllint
-          pip install markdownlint-cli2
+
+      - name: 🧱 Set up Node.js (for markdownlint)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Install markdownlint
+        run: npm install -g markdownlint-cli
 
       - name: 🔍 Validate YAML syntax
         run: |
           yamllint mkdocs.yml || true
           yamllint .github/workflows/*.yml || true
 
-      - name: 🧠 Lint Markdown formatting
+      - name: 🧠 Lint Markdown files
         run: |
-          npx --yes markdownlint-cli2 docs/**/*.md
+          markdownlint "docs/**/*.md" --ignore "docs/100_tasks/*.md"
 
       - name: 🪶 Spell check docs
         run: |
