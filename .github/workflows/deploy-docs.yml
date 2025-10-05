@@ -54,4 +54,5 @@ jobs:
           mkdocs build --config-file mkdocs-ci.yml --strict --clean
 
       - name: 🚀 Deploy if build passes
-        if: github.ref == 'refs/heads/mai
+        if: github.ref == 'refs/heads/main' && success()
+        run: mkdocs gh-deploy --force
