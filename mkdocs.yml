@@ -1,0 +1,53 @@
+site_name: CuttingQueues
+site_description: 100 brutal Celery and Redis experiments to master distributed queue systems.
+site_url: https://cuttingqueues.com
+repo_url: https://github.com/HungryEagle/cuttingqueues
+repo_name: HungryEagle/cuttingqueues
+theme:
+  name: material
+  logo: assets/logo1.png
+  favicon: assets/favicon.png
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    scheme: slate
+    primary: black
+    accent: light blue
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+# extra_css:
+#   - styles/brand.css
+nav:
+  - Home: index.md
+  - Philosophy: philosophy.md
+  - Quickstart: quickstart.md
+  - 100 Tasks:
+      - "01 — Prefork vs Solo": 100_tasks/01_prefork_vs_solo.md
+      - "02 — Retry Fairness": 100_tasks/02_retry_fairness.md
+  - Architecture:
+      - "Queue Design": architecture/queue_design.md
+      - "Celery Patterns": architecture/celery_patterns.md
+      - "Redis Streams": architecture/redis_streams.md
+  - Observability:
+      - "Prometheus": observability/prometheus.md
+      - "Grafana": observability/grafana_dashboards.md
+      - "Sentry": observability/sentry_integration.md
+  - Contributing: contributing.md
+  - Roadmap: roadmap.md
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/HungryEagle/cuttingqueues
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/TweetsVenu
+  generator: false
+  meta:
+    description: CuttingQueues — 100 brutal Celery experiments to master distributed queues.
+    keywords: [Celery, Redis, Distributed Systems, Prometheus, Grafana, Observability]
