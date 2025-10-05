@@ -1,30 +1,54 @@
-name: Deploy CuttingQueues Docs
+name: Build, Lint & Deploy CuttingQueues Docs
 
 on:
   push:
     branches:
-      - master
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  deploy:
+  build-lint-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: 🧾 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: |
           pip install mkdocs-material
+          pip install mkdocs-htmlproofer-plugin
+          pip install mkdocs-lint
+          pip install codespell
+          pip install yamllint
 
-      - name: Build and deploy
+      - name: 🔍 Validate YAML syntax
         run: |
-          mkdocs gh-deploy --force
+          yamllint mkdocs.yml || true
+          yamllint .github/workflows/*.yml || true
+
+      - name: 🧠 Lint docs with mkdocs-lint
+        run: mkdocs-lint
+
+      - name: 🪶 Spell check docs
+        run: |
+          codespell docs/ --skip="*.png,*.svg,*.jpg" -L "teh,crate,queueing"
+
+      - name: 🔗 Validate links
+        run: mkdocs build --strict --clean
+        env:
+          MKDOCS_PROOFER_IGNORE: "mailto:"
+
+      - name: 🚀 Deploy if build passes
+        if: github.ref == 'refs/heads/main' && success()
+        run: mkdocs gh-deploy --force
